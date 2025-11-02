@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microservices Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .navbar {
+            background: white;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .nav-links button {
+            padding: 10px 20px;
+            margin: 0 5px;
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .nav-links button:hover {
+            background: #f0f0f0;
+        }
+        .nav-links button.active {
+            background: #007bff;
+            color: white;
+        }
+        .page {
+            display: none;
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .page.active {
+            display: block;
+        }
+        .loader {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+        .error {
+            background: #fee;
+            color: #c00;
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>🏢 Microservices Dashboard</h1>
+        <div class="nav-links">
+            <button onclick="showPage('home')" class="active">Home</button>
+            <button onclick="showPage('auth')">Auth</button>
+            <button onclick="showPage('user')">User</button>
+            <button onclick="showPage('survey')">Survey</button>
+            <button onclick="showPage('payment')">Payment</button>
+        </div>
+    </div>
+
+    <div id="home" class="page active">
+        <h2>🚀 Welcome to Microservices Dashboard</h2>
+        <p>Click on the services above to view data from each microservice.</p>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-top: 2rem;">
+            <div style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 2rem; border-radius: 8px; cursor: pointer;" onclick="showPage('auth')">
+                <h3>🔐 Auth Service</h3>
+                <p>User authentication and management</p>
+            </div>
+            <div style="background: linear-gradient(135deg, #f093fb, #f5576c); color: white; padding: 2rem; border-radius: 8px; cursor: pointer;" onclick="showPage('user')">
+                <h3>👤 User Service</h3>
+                <p>User profiles and data</p>
+            </div>
+            <div style="background: linear-gradient(135deg, #4facfe, #00f2fe); color: white; padding: 2rem; border-radius: 8px; cursor: pointer;" onclick="showPage('survey')">
+                <h3>📊 Survey Service</h3>
+                <p>Surveys and responses</p>
+            </div>
+            <div style="background: linear-gradient(135deg, #43e97b, #38f9d7); color: white; padding: 2rem; border-radius: 8px; cursor: pointer;" onclick="showPage('payment')">
+                <h3>💳 Payment Service</h3>
+                <p>Payments and transactions</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="auth" class="page">
+        <h2>🔐 Auth Service</h2>
+        <!-- Link to test the direct /api/auth route -->
+        <p>Access the service root directly: <a href="/api/auth" target="_blank">/api/auth</a></p>
+        <div id="auth-status">Status: Checking...</div>
+        <div id="auth-content" class="loader">Loading auth data...</div>
+    </div>
+
+    <div id="user" class="page">
+        <h2>👤 User Service</h2>
+        <p>Access the service root directly: <a href="/api/user" target="_blank">/api/user</a></p>
+        <div id="user-status">Status: Checking...</div>
+        <div id="user-content" class="loader">Loading user data...</div>
+    </div>
+
+    <div id="survey" class="page">
+        <h2>📊 Survey Service</h2>
+        <p>Access the service root directly: <a href="/api/survey" target="_blank">/api/survey</a></p>
+        <div id="survey-status">Status: Checking...</div>
+        <div id="survey-content" class="loader">Loading survey data...</div>
+    </div>
+
+    <div id="payment" class="page">
+        <h2>💳 Payment Service</h2>
+        <p>Access the service root directly: <a href="/api/payment" target="_blank">/api/payment</a></p>
+        <div id="payment-status">Status: Checking...</div>
+        <div id="payment-content" class="loader">Loading payment data...</div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin; 
+
+        function showPage(page) {
+            // Update active page and button
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-links button').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(page).classList.add('active');
+            
+            const correspondingButton = document.querySelector(`.nav-links button[onclick="showPage('${page}')"]`);
+            if (correspondingButton) {
+                correspondingButton.classList.add('active');
+            }
+            
+            // Load data for service pages
+            if (page !== 'home') {
+                loadPageData(page);
+            }
+        }
+
+        async function loadPageData(page) {
+            const contentDiv = document.getElementById(`${page}-content`);
+            const statusDiv = document.getElementById(`${page}-status`);
+            
+            contentDiv.innerHTML = '<div class="loader">Loading...</div>';
+            statusDiv.textContent = 'Status: Checking...';
+            
+            try {
+                let data;
+                let endpoint;
+                
+                // Define the detailed data endpoint for each service
+                if (page === 'auth') {
+                    // This endpoint is used for the data display (e.g., list of users)
+                    endpoint = '/api/auth/users'; 
+                } else if (page === 'user') {
+                    endpoint = '/api/user/profiles';
+                } else if (page === 'survey') {
+                    endpoint = '/api/survey/surveys';
+                } else if (page === 'payment') {
+                    endpoint = '/api/payment/payments';
+                } else {
+                    throw new Error("Invalid page for data loading.");
+                }
+                
+                // 1. Try fetching the detailed data
+                data = await fetchData(endpoint);
+                
+                // 2. Display the data if successful
+                if (page === 'auth') {
+                    displayAuthData(contentDiv, data);
+                } else if (page === 'user') {
+                    displayUserData(contentDiv, data);
+                } else if (page === 'survey') {
+                    displaySurveyData(contentDiv, data);
+                } else if (page === 'payment') {
+                    displayPaymentData(contentDiv, data);
+                }
+                
+                statusDiv.textContent = 'Status: ✅ Active (Data endpoint success)';
+            } catch (initialError) {
+                // 3. If data fetch fails, try hitting the root /api/<service> path for a basic status check
+                try {
+                    const rootEndpoint = `/api/${page}`;
+                    const statusCheck = await fetchData(rootEndpoint);
+                    
+                    // Display both the error and the success of the root check
+                    contentDiv.innerHTML = `<div class="error">Data Endpoint Error: ${initialError.message}</div>
+                                            <p><strong>Root Check Success:</strong> The service is responding on <a href="${rootEndpoint}" target="_blank">${rootEndpoint}</a>. Response body: ${JSON.stringify(statusCheck)}</p>`;
+                    statusDiv.textContent = 'Status: ⚠️ Service Running (Data Endpoint Error)';
+                } catch (rootError) {
+                     // 4. If root check fails, the service is likely down
+                     contentDiv.innerHTML = `<div class="error">Service Unreachable: ${rootError.message}. Please ensure all services are running via 'python run.py'.</div>`;
+                     statusDiv.textContent = 'Status: ❌ Error';
+                }
+            }
+        }
+
+        async function fetchData(endpoint) {
+            const response = await fetch(API_BASE + endpoint);
+            if (!response.ok) {
+                let errorDetail = response.statusText;
+                try {
+                    const errorJson = await response.json();
+                    errorDetail = errorJson.error || errorJson.detail || errorDetail;
+                } catch (e) {
+                    // ignore
+                }
+                throw new Error(`HTTP ${response.status} Error: ${errorDetail}`);
+            }
+            return await response.json();
+        }
+        
+        // --- Dummy Data Display Functions (Assumes service stubs are running) ---
+
+        function displayAuthData(container, data) {
+            // Assumes data has a 'users' array field
+            if (!data.users || data.users.length === 0) {
+                container.innerHTML = '<p>No mock users found in the Auth Service.</p>';
+                return;
+            }
+            
+            let html = `<h3>Registered Users (${data.users.length})</h3>`;
+            html += '<table><tr><th>ID</th><th>Username</th><th>Email</th><th>Created</th></tr>';
+            
+            data.users.forEach(user => {
+                html += `<tr>
+                    <td>${user.id || 'N/A'}</td>
+                    <td>${user.username || 'N/A'}</td>
+                    <td>${user.email || 'N/A'}</td>
+                    <td>${new Date(user.created_at || Date.now()).toLocaleDateString()}</td>
+                </tr>`;
+            });
+            
+            html += '</table>';
+            container.innerHTML = html;
+        }
+
+        function displayUserData(container, data) {
+            // Assumes data has a 'profiles' array field
+            if (!data.profiles || data.profiles.length === 0) {
+                container.innerHTML = '<p>No mock profiles found in the User Service.</p>';
+                return;
+            }
+            
+            let html = `<h3>User Profiles (${data.profiles.length})</h3>`;
+            html += '<div style="display: grid; gap: 1rem;">';
+            
+            data.profiles.forEach(profile => {
+                html += `<div style="background: #f8f9fa; padding: 1rem; border-radius: 8px;">
+                    <h4>${profile.full_name || 'N/A'}</h4>
+                    <p><strong>User ID:</strong> ${profile.user_id || 'N/A'}</p>
+                    <p><strong>Phone:</strong> ${profile.phone || 'N/A'}</p>
+                    <p><strong>Address:</strong> ${profile.address || 'N/A'}</p>
+                </div>`;
+            });
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function displaySurveyData(container, data) {
+            // Assumes data has a 'surveys' array field
+            if (!data.surveys || data.surveys.length === 0) {
+                container.innerHTML = '<p>No mock surveys found in the Survey Service.</p>';
+                return;
+            }
+            
+            let html = `<h3>Surveys (${data.surveys.length})</h3>`;
+            html += '<div style="display: grid; gap: 1rem;">';
+            
+            data.surveys.forEach(survey => {
+                html += `<div style="background: #e3f2fd; padding: 1rem; border-radius: 8px;">
+                    <h4>${survey.title || 'N/A'}</h4>
+                    <p>${survey.description || 'N/A'}</p>
+                    <small>Created: ${new Date(survey.created_at || Date.now()).toLocaleDateString()}</small>
+                </div>`;
+            });
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function displayPaymentData(container, data) {
+            // Assumes data has a 'payments' array field
+            if (!data.payments || data.payments.length === 0) {
+                container.innerHTML = '<p>No mock payments found in the Payment Service.</p>';
+                return;
+            }
+            
+            let html = `<h3>Payments (${data.payments.length})</h3>`;
+            html += '<table><tr><th>ID</th><th>User ID</th><th>Amount</th><th>Status</th><th>Date</th></tr>';
+            
+            data.payments.forEach(payment => {
+                html += `<tr>
+                    <td>${payment.id || 'N/A'}</td>
+                    <td>${payment.user_id || 'N/A'}</td>
+                    <td>$${payment.amount || 0.00}</td>
+                    <td>${payment.status || 'N/A'}</td>
+                    <td>${new Date(payment.created_at || Date.now()).toLocaleDateString()}</td>
+                </tr>`;
+            });
+            
+            html += '</table>';
+            container.innerHTML = html;
+        }
+    </script>
+</body>
+</html>
