@@ -8,11 +8,12 @@ CORS(app)
 
 # Service URLs
 SERVICE_URLS = {
-    'auth': 'http://localhost:5001',
-    'user': 'http://localhost:5002',
-    'survey': 'http://localhost:5003',
-    'payment': 'http://localhost:5004'
+    'auth': os.getenv("AUTH_SERVICE_URL", "http://localhost:5001"),
+    'user': os.getenv("USER_SERVICE_URL", "http://localhost:5002"),
+    'survey': os.getenv("SURVEY_SERVICE_URL", "http://localhost:5003"),
+    'payment': os.getenv("PAYMENT_SERVICE_URL", "http://localhost:5004")
 }
+
 
 def proxy_request(service_name, subpath=""):
     """Core logic to proxy the request to the correct microservice."""
