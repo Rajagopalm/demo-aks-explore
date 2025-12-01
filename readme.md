@@ -1,17 +1,17 @@
-# Microservices Application Deployment with Docker & Kubernetes (AKS)
+# Microservices Application Deployment with Docker & Kubernetes (AKS) Using Helm Charts
 
 This project demonstrates a **microservices-based web application** deployed on **Azure Kubernetes Service (AKS)**. It integrates a modern DevOps lifecycle — from containerization to orchestration — using cloud-native tools and practices.
 
 ---
 
-## 🖼️ Architecture And Workflow
+##  Architecture And Workflow
 ![Alt text](diagram-images/diagram1.png)
 
 ![Alt text](diagram-images/ss1.png)
 
 ![Alt text](diagram-images/ss2.png)
 
-## 🧩 Project Overview
+##  Project Overview
 
 The application consists of multiple microservices:
 - **Frontend Service** – A user-facing web interface built with modern frontend technologies.
@@ -24,21 +24,22 @@ Each service has its own **Dockerfile**, Kubernetes **Deployment**, **Service**,
 
 ---
 
-## 🚀 Key Features
+##  Key Features
 
 - Fully containerized microservices using **Docker**
 - Managed orchestration using **Kubernetes (AKS)**
+- **Helm Charts** for simplified deployment and management
 - Secure environment variables using **ConfigMaps** and **Secrets**
 - **Ingress Controller** for unified access to services
 - **Horizontal Pod Autoscaling (HPA)** for scalability
 - **Namespace isolation** for better environment organization
 - Includes **frontend**, **backend microservices**, and **database integration**
-- Configured **MySQL** both locally and in external environments (Railway/AKS)
+- Configured **MySQL** an external environments (Railway/infinityFree/azure db service)
 - Learned and implemented **debugging**, **cluster monitoring**, and **service discovery**
 
 ---
 
-## 🏗️ Kubernetes Components Used
+##  Kubernetes Components Used
 
 | Component     | Description |
 |----------------|-------------|
@@ -50,25 +51,105 @@ Each service has its own **Dockerfile**, Kubernetes **Deployment**, **Service**,
 | **Ingress** | Manages external access to the cluster |
 | **HorizontalPodAutoscaler (HPA)** | Automatically scales pods based on CPU utilization |
 | **Namespace** | Segregates and organizes cluster resources logically |
+| **Helm Chart** | Package manager for Kubernetes deployments |
 
 ---
 
-## 🧰 Tools & Technologies
+## Tools & Technologies
 
 - **Docker** – Containerization
 - **Kubernetes (AKS)** – Orchestration and deployment
+- **Helm** – Kubernetes package manager for simplified deployments
 - **MySQL** – Database management
 - **Nginx Ingress Controller** – Routing and load balancing
-- **Helm (optional)** – Simplified deployment management
 - **kubectl** – Kubernetes CLI for managing resources
 - **VS Code** – Development environment
 - **Railway / Local MySQL** – Database hosting and testing
 
 ---
 
-## ⚙️ Deployment Steps
+##  Helm Chart Deployment
 
-Follow the steps below to build, push, and deploy the application to your Kubernetes cluster (local Minikube or AKS):
+### Helm Chart Structure
+<pre>
+helm-code-k8s/
+├── Chart.yaml              # Chart metadata
+├── values.yaml             # Configuration values
+├── templates/              # Kubernetes manifest files
+│   ├── namespace.yaml
+│   ├── configmap.yaml
+│   ├── secret.yaml
+│   ├── ingress.yaml
+│   ├── _helpers.tpl
+│   ├── hpa.yaml
+│   └── services/
+│       ├── auth.yaml
+│       ├── user.yaml
+│       ├── survey.yaml
+│       ├── payment.yaml
+│       ├── api-gateway.yaml
+│       └── frontend.yaml
+</pre>
+
+text
+
+### Quick Start with Helm
+
+```bash
+# Install the Helm chart
+helm install microservice-app ./helm-code-k8s
+
+# Check the deployment status
+helm list
+kubectl get all -n microservice-application
+
+# Upgrade with custom values
+helm upgrade microservice-app ./helm-code-k8s \
+  --set ingress.host=myapp.yourdomain.com \
+  --set services.auth.hpa.minReplicas=3
+
+# Uninstall the chart
+helm uninstall microservice-app
+Customizing Deployment
+
+# Create a custom values.yaml file for environment-specific configurations:
+# custom-values.yaml
+global:
+  namespace: microservice-application
+  
+ingress:
+  host: myapp.production.com
+  
+database:
+  host: production-db.net
+  password: "BASE64_ENCODED_PASSWORD"
+
+services:
+  auth:
+    hpa:
+      minReplicas: 3
+      maxReplicas: 10
+  frontend:
+    hpa:
+      minReplicas: 3
+      maxReplicas: 8
+
+# Deploy with custom values:
+helm install microservice-app ./helm-code-k8s -f custom-values.yaml
+```
+
+### Chart Features
+| Feature | Description |
+|---------|-------------|
+| **Parameterized Configurations** | All service settings configurable via values.yaml |
+| **Automatic HPA** | Built-in Horizontal Pod Autoscaling for all microservices |
+| **Environment Customization** | Easy customization for different environments (dev/staging/prod) |
+| **Unified Deployment** | Single command to deploy all microservices |
+| **Easy Scaling** | Simplified scaling and updates through Helm commands |
+
+## ⚙️ Deployment Options
+
+### Option 1: Traditional Manifest Deployment (Manual)
 
 ```bash
 # 1️⃣ Build Docker Images for All Services
@@ -89,20 +170,78 @@ kubectl apply -f k8s/configmap.yaml
 kubectl apply -f k8s/secret.yaml
 
 # 4️⃣ Deploy All Microservices and Components
-kubectl apply -f k8s/ . 
+kubectl apply -f k8s/
 
 # 5️⃣ Verify Deployment Status
-kubectl get pods -n microservice-ap
-kubectl get svc -n microservice-ap
+kubectl get pods -n microservice-app
+kubectl get svc -n microservice-app
 kubectl get ingress -n microservice-app
+```
 
-# 6️⃣ Access the Application
+Option 2: Helm Chart Deployment
+```
+# 1️⃣ Package and deploy with Helm
+helm package ./microservice-helm
+helm install microservice-app microservice-application-0.1.0.tgz
+
+# 2️⃣ Verify Helm release
+helm status microservice-app
+
+# 3️⃣ Check all deployed resources
+kubectl get all -n microservice-application
+
+# 4️⃣ View configured values
+helm get values microservice-app
+
+# 5️⃣ Access the application
 # For AKS or Cloud Environment:
 # Access via Ingress Domain
 # Example: http://myapp.example.com
 ```
 
+```
+Benefits of Helm Deployment
+Single command deployment of all microservices
 
+Version control for deployments
+
+Easy rollback to previous versions
+
+Configuration management through values.yaml
+
+Reusable templates across environments
+
+Simplified updates with helm upgrade
+```
+
+Operations & Maintenance
+```
+# Manual scaling
+kubectl scale deployment auth-deployment --replicas=3 -n microservice-application
+
+# Helm-based scaling (update values and upgrade)
+helm upgrade microservice-app ./microservice-helm \
+  --set services.auth.replicas=3 \
+  --set services.user.replicas=2
+
+# Check pod status and resource usage
+kubectl top pods -n microservice-application
+
+# View HPA status
+kubectl get hpa -n microservice-application
+
+# Check logs
+kubectl logs -f deployment/auth-deployment -n microservice-application
+# Troubleshooting
+
+# Describe resources for detailed info
+kubectl describe pod <pod-name> -n microservice-application
+kubectl describe ingress -n microservice-application
+
+# Debug services
+kubectl get events -n microservice-application --sort-by='.lastTimestamp'
+kubectl port-forward service/frontend-service 8080:80 -n microservice-application
+```
 ## 📫 Contact & Support
 
 ### About Me
@@ -120,9 +259,3 @@ DevOps Practitioner | Cloud & Kubernetes Enthusiast
 - Exploring Kubernetes and Container Orchestration
 - Building practical DevOps implementations
 - Open to collaboration and knowledge sharing
-
-### Feedback & Collaboration
-If you have suggestions or want to collaborate:
-- Open an issue in the GitHub repository
-- Connect with me on LinkedIn
-- Share your insights and experiences
