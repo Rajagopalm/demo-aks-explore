@@ -158,7 +158,7 @@ docker build -t myapp/auth-service ./auth-service
 docker build -t myapp/user-service ./user-service
 docker build -t myapp/survey-service ./survey-service
 
-# 2️⃣ Push Images to Container Registry (e.g., Docker Hub, ACR)
+# 2️⃣ Push Images to Container Registry (Docker Hub, ACR)
 docker push <registry>/myapp/frontend
 docker push <registry>/myapp/auth-service
 docker push <registry>/myapp/user-service
