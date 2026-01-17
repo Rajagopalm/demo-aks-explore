@@ -12,7 +12,7 @@ variable "resource_group_name" {
 variable "location" {
   description = "Azure region"
   type        = string
-  default     = "SOUTH INDIA"
+  default     = "EAST US"
 }
 
 variable "acr_name" {

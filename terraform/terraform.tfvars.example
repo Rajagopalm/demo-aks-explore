@@ -6,7 +6,7 @@ subscription_id = "your-subscription-id-here"
 tenant_id       = "your-tenant-id-here"  # Optional, will be auto-detected if using service principal
 
 # Resource Configuration
-location = "SOUTH INDIA"  # Change to your preferred region
+location = "EAST US"  # Change to your preferred region
 
 # Resource Names (can be customized)
 resource_group_name = "microservice-rg"

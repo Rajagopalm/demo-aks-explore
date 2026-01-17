@@ -64,7 +64,7 @@ Set these secrets in your GitHub repository (Settings > Secrets and variables > 
 **Terraform Variables (as secrets):**
 - `AZURE_SUBSCRIPTION_ID`: Your Azure subscription ID
 - `AZURE_TENANT_ID`: Your Azure tenant ID
-- `AZURE_LOCATION`: Azure region (e.g., "SOUTH INDIA")
+- `AZURE_LOCATION`: Azure region (e.g., "EAST US")
 
 **Optional Resource Configuration:**
 - `RESOURCE_GROUP_NAME`: Resource group name (default: "microservice-rg")
