@@ -71,7 +71,7 @@ Set these secrets in your GitHub repository (Settings > Secrets and variables > 
 - `ACR_NAME`: ACR name (default: "microserviceacr")
 - `AKS_CLUSTER_NAME`: AKS cluster name (default: "microservice-aks")
 - `AKS_NODE_COUNT`: Number of AKS nodes (default: 2)
-- `AKS_VM_SIZE`: VM size for AKS nodes (default: "Standard_DS2_v2")
+- `AKS_VM_SIZE`: VM size for AKS nodes (default: "standard_b16als_v2")
 
 ## Usage
 
