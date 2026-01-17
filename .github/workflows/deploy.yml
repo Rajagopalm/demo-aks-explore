@@ -8,8 +8,8 @@ on:
 env:
   REGISTRY: ${{ secrets.ACR_NAME }}.azurecr.io
   IMAGE_NAME: microservice-app
-  AZURE_RESOURCE_GROUP: your-resource-group
-  AZURE_CLUSTER_NAME: your-aks-cluster
+  AZURE_RESOURCE_GROUP: microservice-rg
+  AZURE_CLUSTER_NAME: microservice-aks
   HELM_CHART_PATH: helm-code-k8s
 
 jobs:
@@ -21,16 +21,13 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Azure Login
-      uses: azure/login@v1
+      uses: azure/login@v2
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
+        auth-type: SERVICE_PRINCIPAL
 
     - name: Login to Azure Container Registry
-      uses: azure/docker-login@v1
-      with:
-        login-server: ${{ secrets.ACR_NAME }}.azurecr.io
-        username: ${{ secrets.ACR_USERNAME }}
-        password: ${{ secrets.ACR_PASSWORD }}
+      run: az acr login --name ${{ secrets.ACR_NAME }}
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
@@ -86,9 +83,10 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Azure Login
-      uses: azure/login@v1
+      uses: azure/login@v2
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
+        auth-type: SERVICE_PRINCIPAL
 
     - name: Set up kubectl
       uses: azure/setup-kubectl@v3
