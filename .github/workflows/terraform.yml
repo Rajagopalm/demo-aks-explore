@@ -33,7 +33,7 @@ env:
   TF_VAR_acr_name: ${{ secrets.ACR_NAME || 'microserviceacr' }}
   TF_VAR_aks_cluster_name: ${{ secrets.AKS_CLUSTER_NAME || 'microservice-aks' }}
   TF_VAR_node_count: ${{ secrets.AKS_NODE_COUNT || 1 }}
-  TF_VAR_vm_size: ${{ secrets.AKS_VM_SIZE || 'standard_b16als_v2' }}
+  TF_VAR_vm_size: ${{ secrets.AKS_VM_SIZE || 'Standard_B2s' }}
 
 
 jobs:
@@ -67,7 +67,7 @@ jobs:
       run: terraform init
 
     - name: Terraform Format
-      run: terraform fmt
+      run: terraform fmt -check
 
     - name: Terraform Validate
       run: terraform validate
