@@ -103,9 +103,9 @@ jobs:
       with:
         version: 'v3.12.0'
 
-    - name: Create Namespace for Helm Release
+    - name: Cleanup Namespace for Helm Release
       run: |
-        kubectl get namespace microservice-application || kubectl create namespace microservice-application
+        kubectl delete namespace microservice-application --ignore-not-found
 
     - name: Deploy to AKS
       run: |
