@@ -11,9 +11,9 @@ terraform {
   }
   backend "azurerm" {
     # Configure these values in your environment or via variables
-    resource_group_name  = "tfstate-rg"              # Change as needed
-    storage_account_name = "tfstateaccountrajag01"    # Change as needed
-    container_name       = "tfstate"                  # Change as needed
+    resource_group_name  = "tfstate-rg"           # Change as needed
+    storage_account_name = "tfstateaccountrajag01" # Change as needed
+    container_name       = "tfstate"              # Change as needed
     key                  = "terraform.tfstate"
   }
 }
