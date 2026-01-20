@@ -36,5 +36,5 @@ variable "node_count" {
 variable "vm_size" {
   description = "VM size for AKS nodes"
   type        = string
-  default     = "Standard_D4as_v4" # 2 vCPUs, 8GB RAM (cost-effective, meets AKS requirements)
+  default     = "Standard_D4as_v4" # 4 vCPUs, 8GB RAM (cost-effective, meets AKS requirements)
 }
