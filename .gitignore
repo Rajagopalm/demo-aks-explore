@@ -1,3 +1,4 @@
 .env
 run.py
 /k8s-manifests/secret.yml
+terraform/kubectl.exe
