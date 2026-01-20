@@ -103,6 +103,10 @@ jobs:
       with:
         version: 'v3.12.0'
 
+    - name: Create Namespace for Helm Release
+      run: |
+        kubectl get namespace microservice-application || kubectl create namespace microservice-application
+
     - name: Deploy to AKS
       run: |
         helm upgrade --install microservice-application ${{ env.HELM_CHART_PATH }} \
