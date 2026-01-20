@@ -111,6 +111,7 @@ jobs:
       run: |
         helm upgrade --install microservice-application ${{ env.HELM_CHART_PATH }} \
           --namespace microservice-application \
+          --create-namespace \
           --set global.image.repository=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} \
           --set services.auth.image.tag=auth-${{ github.sha }} \
           --set services.user.image.tag=user-${{ github.sha }} \
