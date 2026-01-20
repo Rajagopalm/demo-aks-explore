@@ -11,9 +11,9 @@ terraform {
   }
   backend "azurerm" {
     # Configure these values in your environment or via variables
-    resource_group_name  = "tfstate-rg"         # Change as needed
-    storage_account_name = "tfstateaccountrajag01"     # Change as needed
-    container_name       = "tfstate"            # Change as needed
+    resource_group_name  = "tfstate-rg"              # Change as needed
+    storage_account_name = "tfstateaccountrajag01"    # Change as needed
+    container_name       = "tfstate"                  # Change as needed
     key                  = "terraform.tfstate"
   }
 }
@@ -23,8 +23,7 @@ provider "azurerm" {
   subscription_id = var.subscription_id
 }
 
-provider "azuread" {
-}
+provider "azuread" {}
 
 data "azurerm_subscription" "current" {}
 
@@ -65,24 +64,19 @@ resource "azurerm_kubernetes_cluster" "aks" {
   }
 }
 
-
-# Wait for AKS managed identity to be ready
 resource "time_sleep" "wait_for_aks_identity" {
-  depends_on = [azurerm_kubernetes_cluster.aks]
+  depends_on      = [azurerm_kubernetes_cluster.aks]
   create_duration = "30s"
 }
 
-# Assign AcrPull role to AKS managed identity
 resource "azurerm_role_assignment" "aks_acr_pull" {
   principal_id                     = azurerm_kubernetes_cluster.aks.kubelet_identity[0].object_id
   role_definition_name             = "AcrPull"
   scope                            = azurerm_container_registry.acr.id
   skip_service_principal_aad_check = true
-  depends_on = [time_sleep.wait_for_aks_identity]
+  depends_on                       = [time_sleep.wait_for_aks_identity]
 }
 
-
-# Create a service principal for GitHub Actions
 resource "azuread_application" "github_actions" {
   display_name = "github-actions-sp"
 }
