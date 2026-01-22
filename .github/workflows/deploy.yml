@@ -112,13 +112,16 @@ jobs:
       with:
         version: 'v3.12.0'
 
+    - name: Ensure namespace exists
+      run: |
+        kubectl create namespace microservice-application --dry-run=client -o yaml | kubectl apply -f -
+
     - name: Deploy to AKS
       run: |
         if helm status microservice-application --namespace microservice-application; then
           echo "Release exists, running helm upgrade..."
           helm upgrade microservice-application ${{ env.HELM_CHART_PATH }} \
             --namespace microservice-application \
-            --create-namespace \
             --set global.image.repository=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} \
             --set services.auth.image.tag=auth-${{ github.sha }} \
             --set services.user.image.tag=user-${{ github.sha }} \
@@ -130,7 +133,6 @@ jobs:
           echo "Release does not exist, running helm install..."
           helm install microservice-application ${{ env.HELM_CHART_PATH }} \
             --namespace microservice-application \
-            --create-namespace \
             --set global.image.repository=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} \
             --set services.auth.image.tag=auth-${{ github.sha }} \
             --set services.user.image.tag=user-${{ github.sha }} \
