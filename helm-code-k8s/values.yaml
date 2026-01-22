@@ -38,11 +38,11 @@ services:
       tag: auth
     resources:
       requests:
+          cpu: 20m
+          memory: 8Mi
+      limits:
           cpu: 50m
           memory: 16Mi
-      limits:
-          cpu: 100m
-          memory: 32Mi
     hpa:
       enabled: true
       minReplicas: 1
@@ -58,11 +58,11 @@ services:
       tag: user
     resources:
       requests:
-        cpu: 200m
-        memory: 25Mi
+          cpu: 20m
+          memory: 8Mi
       limits:
-        cpu: 500m
-        memory: 51Mi
+          cpu: 50m
+          memory: 16Mi
     hpa:
       enabled: true
       minReplicas: 1
@@ -78,11 +78,11 @@ services:
       tag: survey
     resources:
       requests:
-        cpu: 200m
-        memory: 25Mi
+          cpu: 20m
+          memory: 8Mi
       limits:
-        cpu: 500m
-        memory: 51Mi
+          cpu: 50m
+          memory: 16Mi
     hpa:
       enabled: true
       minReplicas: 1
@@ -98,11 +98,11 @@ services:
       tag: payment
     resources:
       requests:
-        cpu: 200m
-        memory: 25Mi
+          cpu: 20m
+          memory: 8Mi
       limits:
-        cpu: 500m
-        memory: 51Mi
+          cpu: 50m
+          memory: 16Mi
     hpa:
       enabled: true
       minReplicas: 1
@@ -118,11 +118,11 @@ services:
       tag: api-gateway
     resources:
       requests:
-        cpu: 200m
-        memory: 25Mi
+          cpu: 20m
+          memory: 8Mi
       limits:
-        cpu: 500m
-        memory: 51Mi
+          cpu: 50m
+          memory: 16Mi
     hpa:
       enabled: true
       minReplicas: 1
@@ -138,11 +138,11 @@ services:
       tag: frontend
     resources:
       requests:
-        cpu: 200m
-        memory: 25Mi
+          cpu: 20m
+          memory: 8Mi
       limits:
-        cpu: 500m
-        memory: 51Mi
+          cpu: 50m
+          memory: 16Mi
     hpa:
       enabled: true
       minReplicas: 1
