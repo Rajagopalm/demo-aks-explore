@@ -38,11 +38,11 @@ services:
       tag: auth
     resources:
       requests:
-        cpu: 200m
-        memory: 25Mi
+          cpu: 50m
+          memory: 16Mi
       limits:
-        cpu: 500m
-        memory: 51Mi
+          cpu: 100m
+          memory: 32Mi
     hpa:
       enabled: true
       minReplicas: 1
