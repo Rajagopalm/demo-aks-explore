@@ -77,32 +77,5 @@ resource "azurerm_role_assignment" "aks_acr_pull" {
   depends_on                       = [time_sleep.wait_for_aks_identity]
 }
 
-resource "azuread_application" "github_actions" {
-  display_name = "github-actions-sp"
-}
-
-resource "azuread_service_principal" "github_actions" {
-  application_id = azuread_application.github_actions.application_id
-}
-
-resource "azuread_service_principal_password" "github_actions" {
-  service_principal_id = azuread_service_principal.github_actions.id
-}
-
-resource "azurerm_role_assignment" "sp_aks" {
-  scope                = azurerm_kubernetes_cluster.aks.id
-  role_definition_name = "Azure Kubernetes Service Cluster User Role"
-  principal_id         = azuread_service_principal.github_actions.object_id
-}
-
-resource "azurerm_role_assignment" "sp_acr" {
-  scope                = azurerm_container_registry.acr.id
-  role_definition_name = "AcrPush"
-  principal_id         = azuread_service_principal.github_actions.object_id
-}
-
-resource "azurerm_role_assignment" "sp_acr_pull" {
-  scope                = azurerm_container_registry.acr.id
-  role_definition_name = "AcrPull"
-  principal_id         = azuread_service_principal.github_actions.object_id
-}
+## OIDC is now used for GitHub Actions authentication.
+## Service principal and password resources are no longer required.

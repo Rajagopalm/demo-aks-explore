@@ -19,14 +19,8 @@ output "aks_kube_config" {
   sensitive = true
 }
 
-# output "sp_client_id" {
-#   value = azuread_application.github_actions.application_id
-# }
-
-# output "sp_client_secret" {
-#   value     = azuread_service_principal_password.github_actions.value
-#   sensitive = true
-# }
+## OIDC is now used for GitHub Actions authentication.
+## Service principal client id and secret outputs are no longer required.
 
 output "sp_tenant_id" {
   value = data.azuread_client_config.current.tenant_id
