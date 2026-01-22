@@ -59,10 +59,10 @@ services:
     resources:
       requests:
           cpu: 20m
-          memory: 8Mi
+          memory: 32Mi
       limits:
           cpu: 50m
-          memory: 16Mi
+          memory: 64Mi
     hpa:
       enabled: true
       minReplicas: 1
@@ -79,10 +79,10 @@ services:
     resources:
       requests:
           cpu: 20m
-          memory: 8Mi
+          memory: 32Mi
       limits:
           cpu: 50m
-          memory: 16Mi
+          memory: 64Mi
     hpa:
       enabled: true
       minReplicas: 1
@@ -99,10 +99,10 @@ services:
     resources:
       requests:
           cpu: 20m
-          memory: 8Mi
+          memory: 32Mi
       limits:
           cpu: 50m
-          memory: 16Mi
+          memory: 64Mi
     hpa:
       enabled: true
       minReplicas: 1
@@ -119,10 +119,10 @@ services:
     resources:
       requests:
           cpu: 20m
-          memory: 8Mi
+          memory: 32Mi
       limits:
           cpu: 50m
-          memory: 16Mi
+          memory: 64Mi
     hpa:
       enabled: true
       minReplicas: 1
@@ -139,10 +139,10 @@ services:
     resources:
       requests:
           cpu: 20m
-          memory: 8Mi
+          memory: 32Mi
       limits:
           cpu: 50m
-          memory: 16Mi
+          memory: 64Mi
     hpa:
       enabled: true
       minReplicas: 1
