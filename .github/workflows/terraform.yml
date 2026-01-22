@@ -35,7 +35,10 @@ env:
   TF_VAR_node_count: ${{ secrets.AKS_NODE_COUNT || 1 }}
   TF_VAR_vm_size: ${{ secrets.AKS_VM_SIZE || 'standard_dc2ds_v3' }}
 
-
+permissions:
+  id-token: write
+  contents: read
+  
 jobs:
   terraform:
     name: 'Terraform'
